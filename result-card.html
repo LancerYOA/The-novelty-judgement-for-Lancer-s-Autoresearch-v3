@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Darwin Skill - novelty-assessment 进化报告 v2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    background: #FAFAF5;
+    font-family: 'Noto Sans SC', 'Inter', sans-serif;
+    padding: 0;
+  }
+
+  .card {
+    width: 960px;
+    min-height: 640px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    background: #FAFAF5;
+    color: #1A1A1A;
+  }
+
+  .brand-bar {
+    background: #1A1A1A;
+    padding: 24px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .brand-name {
+    font-size: 22px;
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: 0.02em;
+    font-family: 'Inter', 'Noto Sans SC', sans-serif;
+  }
+  .brand-name .dot { color: #E8590C; }
+  .brand-date {
+    font-size: 15px;
+    font-weight: 500;
+    color: #888;
+    font-family: 'Inter', sans-serif;
+  }
+  .brand-version {
+    font-size: 13px;
+    font-weight: 700;
+    color: #E8590C;
+    background: rgba(232,89,12,0.15);
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-family: 'Inter', sans-serif;
+    margin-left: 12px;
+  }
+
+  .hero-section {
+    padding: 40px 48px 32px;
+    display: flex;
+    align-items: center;
+    gap: 48px;
+    background: linear-gradient(180deg, #FAFAF5 0%, #F5F0E8 100%);
+    position: relative;
+  }
+
+  .ring-container {
+    flex-shrink: 0;
+    width: 280px;
+    height: 280px;
+    position: relative;
+  }
+  .ring-bg {
+    fill: none;
+    stroke: #E8E0D4;
+    stroke-width: 16;
+    stroke-dasharray: 8 8;
+  }
+  .ring-progress {
+    fill: none;
+    stroke: url(#orangeGradient);
+    stroke-width: 18;
+    stroke-linecap: round;
+    stroke-dasharray: 534;
+    stroke-dashoffset: 16;
+    transform: rotate(-90deg);
+    transform-origin: center;
+    filter: drop-shadow(0 2px 8px rgba(232,89,12,0.3));
+  }
+  .ring-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+  }
+  .ring-score {
+    font-size: 92px;
+    font-weight: 900;
+    color: #1A1A1A;
+    line-height: 1;
+    font-family: 'Inter', sans-serif;
+    letter-spacing: -0.04em;
+  }
+  .ring-max {
+    font-size: 24px;
+    font-weight: 600;
+    color: #B0A898;
+    font-family: 'Inter', sans-serif;
+    margin-left: 2px;
+  }
+  .ring-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #999;
+    margin-top: 4px;
+    letter-spacing: 0.08em;
+  }
+
+  .hero-text {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .hero-title {
+    font-size: 30px;
+    font-weight: 900;
+    line-height: 1.25;
+    color: #1A1A1A;
+  }
+  .hero-skill-name {
+    color: #E8590C;
+  }
+  .hero-subtitle {
+    font-size: 14px;
+    font-weight: 600;
+    color: #666;
+    letter-spacing: 0.02em;
+  }
+  .hero-journey {
+    font-size: 17px;
+    font-weight: 500;
+    color: #666;
+    line-height: 1.5;
+  }
+  .hero-journey strong {
+    color: #1A1A1A;
+    font-weight: 700;
+  }
+  .delta-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #E8590C;
+    color: #fff;
+    padding: 10px 28px;
+    border-radius: 12px;
+    font-size: 38px;
+    font-weight: 900;
+    font-family: 'Inter', sans-serif;
+    letter-spacing: -0.02em;
+    width: fit-content;
+    box-shadow: 0 4px 16px rgba(232,89,12,0.3);
+  }
+  .delta-badge-label {
+    font-size: 15px;
+    font-weight: 700;
+    opacity: 0.9;
+    font-family: 'Noto Sans SC', sans-serif;
+    letter-spacing: 0;
+  }
+
+  .breakthrough-section {
+    padding: 0 48px;
+    display: flex;
+    gap: 16px;
+  }
+  .breakthrough-card {
+    flex: 1;
+    border-radius: 16px;
+    padding: 22px 22px 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .breakthrough-card.primary {
+    background: linear-gradient(135deg, #E8590C 0%, #FF8A4C 100%);
+    color: #fff;
+    flex: 1.3;
+  }
+  .breakthrough-card.secondary {
+    background: #F0EAE0;
+    color: #1A1A1A;
+    border: 2px solid #E0D8CC;
+  }
+  .breakthrough-card.tertiary {
+    background: #FFF5EC;
+    color: #1A1A1A;
+    border: 2px solid #F5DCC0;
+  }
+  .breakthrough-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+  }
+  .breakthrough-card.primary .breakthrough-label {
+    color: rgba(255,255,255,0.75);
+  }
+  .breakthrough-card.secondary .breakthrough-label,
+  .breakthrough-card.tertiary .breakthrough-label {
+    color: #999;
+  }
+  .breakthrough-dim {
+    font-size: 18px;
+    font-weight: 900;
+    margin-bottom: 6px;
+  }
+  .breakthrough-score-row {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+  .breakthrough-from {
+    font-size: 28px;
+    font-weight: 400;
+    opacity: 0.5;
+    font-family: 'Inter', sans-serif;
+    text-decoration: line-through;
+    text-decoration-thickness: 2px;
+  }
+  .breakthrough-arrow {
+    font-size: 18px;
+    opacity: 0.5;
+  }
+  .breakthrough-to {
+    font-size: 40px;
+    font-weight: 900;
+    font-family: 'Inter', sans-serif;
+    line-height: 1;
+  }
+  .breakthrough-card.secondary .breakthrough-to,
+  .breakthrough-card.tertiary .breakthrough-to {
+    color: #E8590C;
+  }
+  .breakthrough-pct {
+    font-size: 14px;
+    font-weight: 700;
+    font-family: 'Inter', sans-serif;
+  }
+  .breakthrough-card.primary .breakthrough-pct {
+    color: rgba(255,255,255,0.85);
+  }
+  .breakthrough-card.secondary .breakthrough-pct,
+  .breakthrough-card.tertiary .breakthrough-pct {
+    color: #2B8A3E;
+  }
+  .breakthrough-story {
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.5;
+    margin-top: 6px;
+  }
+  .breakthrough-card.primary .breakthrough-story {
+    color: rgba(255,255,255,0.9);
+  }
+  .breakthrough-card.secondary .breakthrough-story,
+  .breakthrough-card.tertiary .breakthrough-story {
+    color: #666;
+  }
+
+  .systems-section {
+    padding: 28px 48px 0;
+  }
+  .systems-header {
+    font-size: 13px;
+    font-weight: 700;
+    color: #999;
+    letter-spacing: 0.08em;
+    margin-bottom: 12px;
+  }
+  .systems-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+  }
+  .system-pill {
+    background: #F0EBE3;
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #555;
+    text-align: center;
+    border: 1.5px solid transparent;
+    transition: all 0.2s;
+  }
+  .system-pill.featured {
+    background: #FFF0E6;
+    border-color: rgba(232,89,12,0.25);
+    color: #E8590C;
+  }
+  .system-perf {
+    font-size: 10px;
+    font-weight: 600;
+    color: #888;
+    margin-top: 2px;
+    font-family: 'Inter', monospace;
+  }
+  .system-pill.featured .system-perf {
+    color: rgba(232,89,12,0.75);
+  }
+
+  .dims-section {
+    padding: 24px 48px 0;
+  }
+  .dims-header {
+    font-size: 13px;
+    font-weight: 700;
+    color: #999;
+    letter-spacing: 0.08em;
+    margin-bottom: 14px;
+  }
+  .dims-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+  }
+  .dim-cell {
+    background: #F0EBE3;
+    border-radius: 12px;
+    padding: 14px 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    position: relative;
+  }
+  .dim-cell.hot {
+    background: #FFF0E6;
+    border: 2px solid rgba(232,89,12,0.2);
+  }
+  .dim-cell.warm {
+    background: #F5EEE4;
+  }
+  .dim-name {
+    font-size: 12px;
+    font-weight: 700;
+    color: #888;
+    text-align: center;
+    white-space: nowrap;
+  }
+  .dim-score-row {
+    display: flex;
+    align-items: baseline;
+    gap: 5px;
+  }
+  .dim-score {
+    font-size: 28px;
+    font-weight: 900;
+    font-family: 'Inter', sans-serif;
+    color: #1A1A1A;
+    line-height: 1;
+  }
+  .dim-cell.hot .dim-score {
+    color: #E8590C;
+  }
+  .dim-old-score {
+    font-size: 13px;
+    font-weight: 500;
+    color: #BBB;
+    font-family: 'Inter', sans-serif;
+    text-decoration: line-through;
+    text-decoration-color: #CCC;
+  }
+  .dim-arrow {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 800;
+    font-family: 'Inter', sans-serif;
+    padding: 2px 6px;
+    border-radius: 5px;
+    line-height: 1;
+  }
+  .dim-arrow.up-big {
+    background: #E8590C;
+    color: #fff;
+  }
+  .dim-arrow.up-mid {
+    background: rgba(232,89,12,0.15);
+    color: #E8590C;
+  }
+  .dim-arrow.up-small {
+    background: rgba(43,138,62,0.1);
+    color: #2B8A3E;
+  }
+  .dim-arrow.neutral {
+    background: #eee;
+    color: #999;
+  }
+
+  .summary-section {
+    padding: 24px 48px 0;
+  }
+  .summary-header {
+    font-size: 13px;
+    font-weight: 700;
+    color: #999;
+    letter-spacing: 0.08em;
+    margin-bottom: 12px;
+  }
+  .summary-items {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .summary-item {
+    font-size: 13px;
+    font-weight: 500;
+    color: #555;
+    line-height: 1.55;
+    padding-left: 18px;
+    position: relative;
+  }
+  .summary-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 7px;
+    width: 7px;
+    height: 7px;
+    background: #E8590C;
+    border-radius: 50%;
+  }
+  .summary-item.revert::before {
+    background: #999;
+  }
+  .summary-item.v2::before {
+    background: #2B8A3E;
+  }
+
+  .footer {
+    margin-top: auto;
+    background: #1A1A1A;
+    padding: 24px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .footer-left {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .footer-brand {
+    font-size: 18px;
+    font-weight: 800;
+    color: #fff;
+    font-family: 'Inter', 'Noto Sans SC', sans-serif;
+  }
+  .footer-brand .dot { color: #E8590C; }
+  .footer-slogan {
+    font-size: 13px;
+    color: #777;
+    font-weight: 500;
+  }
+  .footer-right {
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  .footer-url {
+    font-size: 13px;
+    color: #aaa;
+    font-family: 'Inter', monospace;
+    font-weight: 600;
+  }
+  .footer-by {
+    font-size: 12px;
+    color: #666;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle at top right, rgba(232,89,12,0.04) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .card > * {
+    position: relative;
+    z-index: 1;
+  }
+</style>
+</head>
+<body>
+
+<div class="card">
+
+  <!-- 1. 品牌条 -->
+  <div class="brand-bar">
+    <div class="brand-name">Darwin<span class="dot">.</span>skill<span class="brand-version">v2 · 7系统整合</span></div>
+    <div class="brand-date">2026.04.16</div>
+  </div>
+
+  <!-- 2. 核心成就区 -->
+  <div class="hero-section">
+    <div class="ring-container">
+      <svg viewBox="0 0 200 200" width="280" height="280">
+        <defs>
+          <linearGradient id="orangeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#E8590C"/>
+            <stop offset="100%" stop-color="#FF8A4C"/>
+          </linearGradient>
+        </defs>
+        <circle cx="100" cy="100" r="85" class="ring-bg"/>
+        <circle cx="100" cy="100" r="85" class="ring-progress"/>
+      </svg>
+      <div class="ring-center">
+        <div>
+          <span class="ring-score">97</span><span class="ring-max">/100</span>
+        </div>
+        <div class="ring-label">质量总分</div>
+      </div>
+    </div>
+
+    <div class="hero-text">
+      <div class="hero-title">
+        Skill 进化报告 · V2<br>
+        <span class="hero-skill-name">研究创新性评估</span>
+      </div>
+      <div class="hero-subtitle">novelty-assessment · 10 轮迭代 · 2 次棘轮回滚 · 7 系统整合</div>
+      <div class="hero-journey">
+        从 <strong>64.75</strong> 分（baseline）进化到 <strong>97.0</strong> 分<br>
+        <span style="color:#999;font-size:13px;">R9-R12 新增阶段：整合 2025-2026 最前沿 AI Peer-Review 系统</span>
+      </div>
+      <div class="delta-badge">
+        <span>+32.25</span>
+        <span class="delta-badge-label">分</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. 三大突破区 -->
+  <div class="breakthrough-section">
+    <div class="breakthrough-card primary">
+      <div class="breakthrough-label">R9 突破 · 效果维度</div>
+      <div class="breakthrough-dim">Phase 1.0 Novelty Pipeline</div>
+      <div class="breakthrough-score-row">
+        <span class="breakthrough-from">93.5</span>
+        <span class="breakthrough-arrow">&rarr;</span>
+        <span class="breakthrough-to">95.0</span>
+      </div>
+      <div class="breakthrough-pct">+1.5 分</div>
+      <div class="breakthrough-story">DeepReview z₁ 启发：查询扩展 + Top-K 检索 + Rerank + Refutation Chain + 证据自检 + 检查点 A3</div>
+    </div>
+    <div class="breakthrough-card secondary">
+      <div class="breakthrough-label">R10 突破 · 边界条件</div>
+      <div class="breakthrough-dim">B0.5 反偏见自检</div>
+      <div class="breakthrough-score-row">
+        <span class="breakthrough-from">95.0</span>
+        <span class="breakthrough-arrow">&rarr;</span>
+        <span class="breakthrough-to">95.8</span>
+      </div>
+      <div class="breakthrough-pct">+0.8 分</div>
+      <div class="breakthrough-story">NovBench 启发：Over-Positive / Missing Multi-Innovations / Bold 保守 三条主动反偏见</div>
+    </div>
+    <div class="breakthrough-card tertiary">
+      <div class="breakthrough-label">R11 突破 · 整体架构</div>
+      <div class="breakthrough-dim">Phase 2.5 多视角</div>
+      <div class="breakthrough-score-row">
+        <span class="breakthrough-from">95.8</span>
+        <span class="breakthrough-arrow">&rarr;</span>
+        <span class="breakthrough-to">96.3</span>
+      </div>
+      <div class="breakthrough-pct">+0.5 分</div>
+      <div class="breakthrough-story">AgentReview 启发：Optimist / Pessimist / Meta-Reviewer blind synthesis，降 37% bias</div>
+    </div>
+  </div>
+
+  <!-- 4. 7系统整合速览 -->
+  <div class="systems-section">
+    <div class="systems-header">V2 新增整合 · 7 大 AI Peer-Review 系统原理（methodology §9）</div>
+    <div class="systems-grid">
+      <div class="system-pill featured">
+        Stanford Agentic Reviewer
+        <div class="system-perf">ρ=0.42 · Jiang+Ng</div>
+      </div>
+      <div class="system-pill featured">
+        DeepReview-14B
+        <div class="system-perf">MSE↓65.83%</div>
+      </div>
+      <div class="system-pill featured">
+        AgentReview (EMNLP'24)
+        <div class="system-perf">37.1% bias</div>
+      </div>
+      <div class="system-pill featured">
+        debashis1983
+        <div class="system-perf">ρ=0.7382 · 46,748 reviews</div>
+      </div>
+      <div class="system-pill">
+        NovBench
+        <div class="system-perf">1,684 pairs · 4维元评估</div>
+      </div>
+      <div class="system-pill">
+        OpenReviewer-8B
+        <div class="system-perf">79K reviews finetune</div>
+      </div>
+      <div class="system-pill">
+        poldrack/ai-peer-review
+        <div class="system-perf">blind meta-review</div>
+      </div>
+      <div class="system-pill">
+        OpenAIReview
+        <div class="system-perf">Quality vs Gatekeeping</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. 八维度全景 -->
+  <div class="dims-section">
+    <div class="dims-header">八维度全景（baseline → R12，V2 完整周期）</div>
+    <div class="dims-grid">
+      <div class="dim-cell warm">
+        <div class="dim-name">元数据</div>
+        <div class="dim-score-row">
+          <span class="dim-old-score">8</span>
+          <span class="dim-score">9</span>
+        </div>
+        <span class="dim-arrow up-small">+1</span>
+      </div>
+      <div class="dim-cell hot">
+        <div class="dim-name">工作流</div>
+        <div class="dim-score-row">
+          <span class="dim-old-score">7</span>
+          <span class="dim-score">9.4</span>
+        </div>
+        <span class="dim-arrow up-big">+2.4</span>
+      </div>
+      <div class="dim-cell hot">
+        <div class="dim-name">边界覆盖</div>
+        <div class="dim-score-row">
+          <span class="dim-old-score">5</span>
+          <span class="dim-score">9.2</span>
+        </div>
+        <span class="dim-arrow up-big">+4.2</span>
+      </div>
+      <div class="dim-cell hot">
+        <div class="dim-name">检查点</div>
+        <div class="dim-score-row">
+          <span class="dim-old-score">3</span>
+          <span class="dim-score">9.5</span>
+        </div>
+        <span class="dim-arrow up-big">+6.5</span>
+      </div>
+      <div class="dim-cell hot">
+        <div class="dim-name">指令精度</div>
+        <div class="dim-score-row">
+          <span class="dim-old-score">7</span>
+          <span class="dim-score">9.5</span>
+        </div>
+        <span class="dim-arrow up-big">+2.5</span>
+      </div>
+      <div class="dim-cell hot">
+        <div class="dim-name">资源整合</div>
+        <div class="dim-score-row">
+          <span class="dim-old-score">5</span>
+          <span class="dim-score">9.4</span>
+        </div>
+        <span class="dim-arrow up-big">+4.4</span>
+      </div>
+      <div class="dim-cell hot">
+        <div class="dim-name">整体架构</div>
+        <div class="dim-score-row">
+          <span class="dim-old-score">6</span>
+          <span class="dim-score">8.8</span>
+        </div>
+        <span class="dim-arrow up-big">+2.8</span>
+      </div>
+      <div class="dim-cell hot">
+        <div class="dim-name">实测表现</div>
+        <div class="dim-score-row">
+          <span class="dim-old-score">7.5</span>
+          <span class="dim-score">9.5</span>
+        </div>
+        <span class="dim-arrow up-big">+2</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. 迭代摘要 V1+V2 -->
+  <div class="summary-section">
+    <div class="summary-header">完整迭代史（V1: R1-R8 · V2: R9-R12）</div>
+    <div class="summary-items">
+      <div class="summary-item">V1·R1-R2：双检查点闭环 + Phase 0.5 快速筛选 + Refutation 三态（64.75→82.5）</div>
+      <div class="summary-item revert">V1·R3：流程合并被棘轮回滚（评分校准差异）</div>
+      <div class="summary-item">V1·R4：外部知识注入 Smart Plagiarism / Fertile Ground / DeepSeek-R1 锚点（82.5→90.3）</div>
+      <div class="summary-item">V1·R5-R6：加权示例 + ASCII 柱状图 + A2/B0 三条核查（85.0→91.0）</div>
+      <div class="summary-item revert">V1·R7：评估原则重组导致基准漂移，棘轮回滚（91.0→88.0 → revert）</div>
+      <div class="summary-item">V1·R8：One-Shot RL 优化 CoT 案例，D8 实测表现明显提升（91.0→93.5）</div>
+      <div class="summary-item v2">V2·R9：Phase 1.0 DeepReview 风格 Novelty Pipeline（93.5→95.0）</div>
+      <div class="summary-item v2">V2·R10：B0.5 NovBench 启发反偏见三检查（95.0→95.8）</div>
+      <div class="summary-item v2">V2·R11：Phase 2.5 AgentReview 三角色 blind synthesis（95.8→96.3）</div>
+      <div class="summary-item v2">V2·R12：methodology §9 整合 7 系统原理 + 性能对标表（96.3→97.0）</div>
+    </div>
+  </div>
+
+  <!-- 7. 底部 -->
+  <div class="footer">
+    <div class="footer-left">
+      <div class="footer-brand">Darwin<span class="dot">.</span>skill</div>
+      <div class="footer-slogan">Train your Skills like you train your models</div>
+    </div>
+    <div class="footer-right">
+      <div class="footer-url">github.com/alchaincyf/darwin-skill</div>
+      <div class="footer-by" style="color: #888;">novelty-assessment · V2 released</div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

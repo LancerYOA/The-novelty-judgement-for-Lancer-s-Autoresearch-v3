@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>Darwin Skill V5 - AI-Scientist-v2 + Stanford 深度集成</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Noto+Sans+SC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    display: flex; justify-content: center; align-items: flex-start;
+    min-height: 100vh; background: #FAFAF5;
+    font-family: 'Noto Sans SC', 'Inter', sans-serif; padding: 20px;
+  }
+  .card {
+    width: 960px; min-height: 1500px; position: relative;
+    background: #FAFAF5; color: #1A1A1A;
+    padding: 48px 56px 40px;
+    border: 1px solid #E5E0D0;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.06);
+  }
+  .header {
+    display: flex; justify-content: space-between; align-items: baseline;
+    border-bottom: 2px solid #C94B27; padding-bottom: 16px; margin-bottom: 28px;
+  }
+  .brand { font-size: 16px; font-weight: 900; letter-spacing: 1px; color: #C94B27; }
+  .brand-sub { font-size: 11px; color: #666; margin-top: 4px; font-weight: 500; }
+  .date { font-size: 13px; color: #666; font-weight: 500; }
+  .title {
+    font-size: 42px; font-weight: 900; line-height: 1.1;
+    color: #1A1A1A; margin-bottom: 8px; letter-spacing: -1px;
+  }
+  .subtitle {
+    font-size: 15px; color: #C94B27; font-weight: 600;
+    margin-bottom: 28px; letter-spacing: 0.3px;
+  }
+  .quote-box {
+    background: #FFF6F0; border-left: 4px solid #C94B27;
+    padding: 18px 22px; margin-bottom: 28px;
+  }
+  .quote-label { font-size: 11px; font-weight: 700; color: #C94B27; letter-spacing: 2px; margin-bottom: 6px; }
+  .quote-text { font-size: 15px; font-weight: 500; color: #2A2A2A; line-height: 1.6; }
+  .quote-text strong { color: #C94B27; font-weight: 700; }
+  .section-title {
+    font-size: 20px; font-weight: 800; color: #1A1A1A;
+    margin: 28px 0 14px; padding-bottom: 6px;
+    border-bottom: 1px solid #D5D0C0;
+  }
+  .metrics-grid {
+    display: grid; grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px; margin-bottom: 24px;
+  }
+  .metric {
+    background: white; padding: 18px 16px;
+    border: 1px solid #E5E0D0; text-align: center;
+  }
+  .metric-label { font-size: 11px; color: #888; font-weight: 600; letter-spacing: 1px; margin-bottom: 6px; }
+  .metric-before { font-size: 14px; color: #999; text-decoration: line-through; margin-bottom: 2px; }
+  .metric-after { font-size: 28px; font-weight: 900; color: #C94B27; line-height: 1; }
+  .metric-delta { font-size: 12px; color: #2A7A2A; font-weight: 700; margin-top: 4px; }
+  .sources-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 14px; margin-bottom: 24px;
+  }
+  .source-box {
+    background: white; border: 1px solid #E5E0D0; padding: 14px 16px;
+    font-size: 12px;
+  }
+  .source-name { font-size: 14px; font-weight: 800; color: #1A1A1A; margin-bottom: 4px; }
+  .source-org { font-size: 11px; color: #C94B27; font-weight: 700; letter-spacing: 0.5px; margin-bottom: 8px; }
+  .source-contrib { color: #555; line-height: 1.5; }
+  .source-contrib strong { color: #1A1A1A; font-weight: 700; }
+  .rounds-table {
+    width: 100%; border-collapse: collapse; margin-bottom: 24px;
+    font-size: 12.5px;
+  }
+  .rounds-table th {
+    background: #1A1A1A; color: #FAFAF5;
+    padding: 10px 10px; text-align: left; font-weight: 700;
+    font-size: 11.5px; letter-spacing: 0.5px;
+  }
+  .rounds-table td {
+    padding: 11px 10px; border-bottom: 1px solid #E5E0D0;
+    vertical-align: top; line-height: 1.5;
+  }
+  .rounds-table tr:nth-child(even) td { background: #F7F3E8; }
+  .round-tag {
+    display: inline-block; background: #C94B27; color: white;
+    padding: 3px 9px; font-weight: 700; font-size: 11px;
+    border-radius: 2px; margin-bottom: 4px;
+  }
+  .round-score {
+    display: inline-block; background: #2A7A2A; color: white;
+    padding: 2px 7px; font-weight: 700; font-size: 10px;
+    border-radius: 2px; margin-top: 2px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .round-src {
+    font-size: 10.5px; color: #888; margin-top: 4px;
+    font-style: italic;
+  }
+  .test-grid {
+    display: grid; grid-template-columns: 1.6fr 0.8fr 0.9fr 2.2fr;
+    gap: 10px; align-items: center; font-size: 12.5px;
+  }
+  .test-header {
+    font-weight: 700; color: #555; font-size: 11px; letter-spacing: 1px;
+    padding-bottom: 6px; border-bottom: 1px solid #D5D0C0;
+  }
+  .test-row { padding: 9px 0; border-bottom: 1px solid #EEE; }
+  .test-name { font-weight: 600; font-size: 13px; }
+  .test-before { color: #888; font-family: 'JetBrains Mono', monospace; }
+  .test-after { color: #C94B27; font-weight: 800; font-family: 'JetBrains Mono', monospace; font-size: 14px; }
+  .test-note { font-size: 11.5px; color: #666; line-height: 1.4; }
+  .verdict-box {
+    background: #1A1A1A; color: #FAFAF5;
+    padding: 22px 26px; margin: 24px 0 20px;
+  }
+  .verdict-label { font-size: 11px; color: #C94B27; font-weight: 700; letter-spacing: 2px; margin-bottom: 10px; }
+  .verdict-text { font-size: 14.5px; font-weight: 400; line-height: 1.65; }
+  .verdict-text strong { color: #FFD0A0; font-weight: 700; }
+  .footer {
+    position: absolute; bottom: 28px; left: 56px; right: 56px;
+    display: flex; justify-content: space-between; align-items: center;
+    border-top: 1px solid #D5D0C0; padding-top: 14px;
+    font-size: 11px; color: #888;
+  }
+  .footer-brand { font-weight: 700; color: #C94B27; letter-spacing: 1px; }
+  .arrow { color: #C94B27; font-weight: 700; margin: 0 4px; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="header">
+    <div>
+      <div class="brand">DARWIN.SKILL</div>
+      <div class="brand-sub">V5 · AI-Scientist-v2 + Stanford 深度集成</div>
+    </div>
+    <div class="date">2026-04-18</div>
+  </div>
+
+  <div class="title">novelty-assessment</div>
+  <div class="subtitle">从 V4 "评分终于合理" 到 V5 "可行性也纳入决策" · 3 轮进化</div>
+
+  <div class="quote-box">
+    <div class="quote-label">用户指令 · 优化目标</div>
+    <div class="quote-text">
+      "参考 <strong>Sakana AI AI-Scientist-v2</strong> 的创新评判标准和设计创新，结合 <strong>Stanford Agentic Reviewer</strong> 项目——把 V4 缺失的三个设计补齐：<strong>Risk Factors 清单 / Reflection Loop / Feasibility 独立评分</strong>。"
+    </div>
+  </div>
+
+  <div class="section-title">Darwin 8 维总分 · 3 轮累积进化</div>
+  <div class="metrics-grid">
+    <div class="metric">
+      <div class="metric-label">Darwin 总分</div>
+      <div class="metric-before">90.65</div>
+      <div class="metric-after">96.06</div>
+      <div class="metric-delta">+5.41 分</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">SKILL.md 行数</div>
+      <div class="metric-before">964 行</div>
+      <div class="metric-after">1358 行</div>
+      <div class="metric-delta">+41% (≤150%)</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">借鉴开源项目</div>
+      <div class="metric-before">V4：0 个新增</div>
+      <div class="metric-after">V5：2 个</div>
+      <div class="metric-delta">Sakana + Stanford</div>
+    </div>
+  </div>
+
+  <div class="section-title">设计来源 · 2 个旗舰开源项目</div>
+  <div class="sources-grid">
+    <div class="source-box">
+      <div class="source-name">AI-Scientist-v2</div>
+      <div class="source-org">SAKANA AI · 2024 · Agentic Tree Search</div>
+      <div class="source-contrib">
+        <strong>借鉴点（R23/R24/R25 均来自此）</strong><br>
+        · <strong>FinalizeIdea.Risk_Factors</strong> → R23 Risk Factors 清单<br>
+        · <strong>Experiments 字段</strong> → R23 Decisive Test 3 步<br>
+        · <strong>extract_json_between_markers</strong> → R23 JSON 镜像<br>
+        · <strong>num_reflections 循环</strong> → R24 Phase 1.5 Reflection Pass<br>
+        · <strong>Experiments "simple+feasible"</strong> → R25 Feasibility 独立评估
+      </div>
+    </div>
+    <div class="source-box">
+      <div class="source-name">Agentic Reviewer</div>
+      <div class="source-org">STANFORD (Jiang + Ng) · paperreview.ai</div>
+      <div class="source-contrib">
+        <strong>借鉴点 + 差异化定位</strong><br>
+        · <strong>Multi-specificity Query</strong> → Phase 1.0 已内化<br>
+        · <strong>7 维 rubric (含 Claims supported)</strong> → R25 Feasibility 概念切分<br>
+        · <strong>ρ=0.42 vs human</strong> → V5 定位 Quality Review 非 Gatekeeping<br>
+        · <strong>LLMs markedly less likely to comment on novelty like humans</strong> → 本 skill 存在的根本理由<br>
+        · 差异：本 skill 对 novelty 做深度专门化（非通用 review）
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title">3 轮迭代 · 全部保留 0 回滚</div>
+  <table class="rounds-table">
+    <thead>
+      <tr>
+        <th style="width: 90px;">轮次 · 分数</th>
+        <th style="width: 220px;">核心改动</th>
+        <th>设计借鉴 + 改动摘要</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <span class="round-tag">R23</span><br>
+          <span class="round-score">90.65 → 92.90</span><br>
+          <span style="font-size:10px;color:#888;">+2.25</span>
+        </td>
+        <td>
+          <strong>Risk Factors + Decisive Test 3 步 + JSON 镜像</strong><br>
+          <span class="round-src">借鉴: Sakana FinalizeIdea</span>
+        </td>
+        <td>
+          ① Dashboard 新增 <strong>Risk Factors 清单</strong>（≥3 条，风险点 | 触发条件 | 影响）替代单条 Killer Risk<br>
+          ② <strong>Cheapest Decisive Test</strong> 从一句话扩展为 3 步（Setup / Measurement / Success Criterion）<br>
+          ③ 报告末尾追加 <strong>Structured JSON Output</strong> 镜像 + 硬自检规则<br>
+          <span style="color:#2A7A2A;">✓ P2 GNN-IB 实测：agent 从 1 条 Risk 升到 4 条（含 R22 完全漏掉的"不 timely" + "MI 估计工程风险"）；JSON 硬自检抓到 Dashboard 4.6→4.8 笔误</span>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <span class="round-tag">R24</span><br>
+          <span class="round-score">92.90 → 94.94</span><br>
+          <span style="font-size:10px;color:#888;">+2.04</span>
+        </td>
+        <td>
+          <strong>Phase 1.5 Reflection Pass</strong><br>
+          <span class="round-src">借鉴: Sakana num_reflections</span>
+        </td>
+        <td>
+          ① Phase 1 评分后、B0 自检前，新增 <strong>三步 Pass</strong>：查漏 6 维度最弱证据 + 次要 Claim 扫描（反 Missing Multi-Innovations）+ 定向补检索<br>
+          ② 硬约束 <strong>调分 ≤ ±0.3 per 维度</strong>；禁止纯推理调分（必须有具体新证据）<br>
+          ③ 轻量 200 字 / 深度 500 字两档 + B0.2 检查点（仅深度模式触发）<br>
+          ④ 与 Phase 2.5 多视角正交互补：1.5 补证据深度 / 2.5 补视角广度<br>
+          <span style="color:#2A7A2A;">✓ P1 RL-CoT 实测：agent 识别出 R22 完全漏掉的 ACT (Graves 2016) / CALM (Schuster 2022 NeurIPS) 自适应计算正交先驱家族；D1 调整 5.3→5.0 恰好卡 ±0.3 硬约束边界</span>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <span class="round-tag">R25</span><br>
+          <span class="round-score">94.94 → 96.06</span><br>
+          <span style="font-size:10px;color:#888;">+1.12</span>
+        </td>
+        <td>
+          <strong>Feasibility 独立 + 2×2 矩阵</strong><br>
+          <span class="round-src">借鉴: Sakana Experiments + Stanford 7 维</span>
+        </td>
+        <td>
+          ① <strong>Phase 0.9 Feasibility Assessment</strong>（4 子项：算力 / 数据 / 时间 / 团队能力，每项 1-10，均值为 Feasibility Score）<br>
+          ② Dashboard 新增 <strong>Feasibility Score + Risk-Reward Quadrant</strong>（Unicorn 🦄 / Plausible-Empty ⚠️ / Incremental-Practical 🔧 / Avoid 🚫）<br>
+          ③ Worth-Doing Verdict 决策表升级为 <strong>三维</strong>（Taste Gate × Novelty × Feasibility → Quadrant → Verdict）<br>
+          ④ 反 Bold-Idea 保守偏见：Feasibility 不得受 Novelty 拖累<br>
+          <span style="color:#2A7A2A;">✓ P3 GPT-4 作文评分实测：Novelty 3.2（directly_refuted）× Feasibility 9.3（独立高分未被拖累）→ Quadrant = Incremental-Practical → Verdict 从 R24 的"不建议投入"升级为"workshop 可考虑"</span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="section-title">实测验证 · 3 个测试 prompt（Independent Subagent）</div>
+  <div class="test-grid test-header">
+    <div>测试 idea</div>
+    <div>V4 (R22)</div>
+    <div>V5 (R25)</div>
+    <div>V5 新增洞察</div>
+  </div>
+  <div class="test-grid test-row">
+    <div class="test-name">P1 · RL 优化 CoT 粒度</div>
+    <div class="test-before">4.65</div>
+    <div class="test-after">4.7</div>
+    <div class="test-note">✓ 识别出 ACT/CALM 自适应计算先驱（R22 漏）</div>
+  </div>
+  <div class="test-grid test-row">
+    <div class="test-name">P2 · GNN + 信息瓶颈</div>
+    <div class="test-before">6.5-6.8</div>
+    <div class="test-after">4.8</div>
+    <div class="test-note">✓ 严格 Claim Audit 后更符合 GIB 2020 现实；4 条 Risk Factors</div>
+  </div>
+  <div class="test-grid test-row">
+    <div class="test-name">P3 · GPT-4 作文评分</div>
+    <div class="test-before">2.3-2.85</div>
+    <div class="test-after">3.2</div>
+    <div class="test-note">✓ Feasibility 9.3 独立评分 → Quadrant = Incremental-Practical → workshop 可考虑</div>
+  </div>
+
+  <div class="verdict-box">
+    <div class="verdict-label">V5 VERDICT · 结构性升级</div>
+    <div class="verdict-text">
+      3 轮 R23-R25 全部 <strong>keep</strong>（棘轮零回滚）。V4 解决了"评分系统性偏低"，V5 解决了 V4 的三个盲区：
+      <strong>① Risk 分析的广度</strong>（单条 → 清单 3-5 条）、
+      <strong>② 评估者的自省机制</strong>（Reflection Pass 补漏 Missing Multi-Innovations）、
+      <strong>③ 可行性与创新性的正交</strong>（Feasibility 独立评估 + 2×2 矩阵，反 Bold-Idea 保守偏见）。
+      Darwin 8 维从 90.65 累积至 96.06（+5.41），与 V4 一致性评分 4.48 的风格兼容——V5 是在不破坏 V4 评分稳定性的前提下扩展输出维度。
+      <strong>本 skill 现已能区分 4 个象限的研究决策场景：Unicorn / Plausible-Empty / Incremental-Practical / Avoid</strong>——为真实研究生涯的方向选择提供工具。
+    </div>
+  </div>
+
+  <div class="footer">
+    <div>Train your Skills like you train your models · 借鉴 Sakana AI + Stanford</div>
+    <div class="footer-brand">github.com/alchaincyf/darwin-skill</div>
+  </div>
+</div>
+</body>
+</html>

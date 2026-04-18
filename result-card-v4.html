@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>Darwin Skill V4 - 解决系统性偏低问题</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    display: flex; justify-content: center; align-items: flex-start;
+    min-height: 100vh; background: #FAFAF5;
+    font-family: 'Noto Sans SC', 'Inter', sans-serif; padding: 20px;
+  }
+  .card {
+    width: 960px; min-height: 1280px; position: relative;
+    background: #FAFAF5; color: #1A1A1A;
+    padding: 48px 56px 40px;
+    border: 1px solid #E5E0D0;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.06);
+  }
+  .header {
+    display: flex; justify-content: space-between; align-items: baseline;
+    border-bottom: 2px solid #C94B27; padding-bottom: 16px; margin-bottom: 28px;
+  }
+  .brand { font-size: 16px; font-weight: 900; letter-spacing: 1px; color: #C94B27; }
+  .brand-sub { font-size: 11px; color: #666; margin-top: 4px; font-weight: 500; }
+  .date { font-size: 13px; color: #666; font-weight: 500; }
+  .title {
+    font-size: 42px; font-weight: 900; line-height: 1.1;
+    color: #1A1A1A; margin-bottom: 8px; letter-spacing: -1px;
+  }
+  .subtitle {
+    font-size: 15px; color: #C94B27; font-weight: 600;
+    margin-bottom: 32px; letter-spacing: 0.3px;
+  }
+  .problem-box {
+    background: #FFF6F0; border-left: 4px solid #C94B27;
+    padding: 18px 22px; margin-bottom: 24px;
+  }
+  .problem-label { font-size: 11px; font-weight: 700; color: #C94B27; letter-spacing: 2px; margin-bottom: 6px; }
+  .problem-text { font-size: 16px; font-weight: 600; color: #2A2A2A; line-height: 1.5; }
+  .section-title {
+    font-size: 20px; font-weight: 800; color: #1A1A1A;
+    margin: 28px 0 14px; padding-bottom: 6px;
+    border-bottom: 1px solid #D5D0C0;
+  }
+  .metrics-grid {
+    display: grid; grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px; margin-bottom: 24px;
+  }
+  .metric {
+    background: white; padding: 18px 16px;
+    border: 1px solid #E5E0D0; text-align: center;
+  }
+  .metric-label { font-size: 11px; color: #888; font-weight: 600; letter-spacing: 1px; margin-bottom: 6px; }
+  .metric-before { font-size: 14px; color: #999; text-decoration: line-through; margin-bottom: 2px; }
+  .metric-after { font-size: 28px; font-weight: 900; color: #C94B27; line-height: 1; }
+  .metric-delta { font-size: 12px; color: #2A7A2A; font-weight: 700; margin-top: 4px; }
+  .rounds-table {
+    width: 100%; border-collapse: collapse; margin-bottom: 24px;
+    font-size: 13px;
+  }
+  .rounds-table th {
+    background: #1A1A1A; color: #FAFAF5;
+    padding: 10px 12px; text-align: left; font-weight: 700;
+    font-size: 12px; letter-spacing: 0.5px;
+  }
+  .rounds-table td {
+    padding: 10px 12px; border-bottom: 1px solid #E5E0D0;
+    vertical-align: top;
+  }
+  .rounds-table tr:nth-child(even) td { background: #F7F3E8; }
+  .round-tag {
+    display: inline-block; background: #C94B27; color: white;
+    padding: 2px 8px; font-weight: 700; font-size: 11px;
+    border-radius: 2px;
+  }
+  .test-grid {
+    display: grid; grid-template-columns: 2fr 1fr 1fr 2fr;
+    gap: 10px; align-items: center; font-size: 13px;
+    margin-bottom: 8px;
+  }
+  .test-header { font-weight: 700; color: #555; font-size: 11px; letter-spacing: 1px; padding-bottom: 6px; border-bottom: 1px solid #D5D0C0; }
+  .test-row { padding: 8px 0; border-bottom: 1px solid #EEE; }
+  .test-name { font-weight: 600; }
+  .test-before { color: #888; font-family: 'Inter', monospace; }
+  .test-after { color: #C94B27; font-weight: 800; font-family: 'Inter', monospace; font-size: 16px; }
+  .test-note { font-size: 12px; color: #666; line-height: 1.4; }
+  .verdict-box {
+    background: #1A1A1A; color: #FAFAF5;
+    padding: 20px 24px; margin: 24px 0 16px;
+  }
+  .verdict-label { font-size: 11px; color: #C94B27; font-weight: 700; letter-spacing: 2px; margin-bottom: 8px; }
+  .verdict-text { font-size: 16px; font-weight: 500; line-height: 1.6; }
+  .verdict-text strong { color: #FFD0A0; font-weight: 700; }
+  .footer {
+    position: absolute; bottom: 30px; left: 56px; right: 56px;
+    display: flex; justify-content: space-between; align-items: center;
+    border-top: 1px solid #D5D0C0; padding-top: 16px;
+    font-size: 11px; color: #888;
+  }
+  .footer-brand { font-weight: 700; color: #C94B27; letter-spacing: 1px; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="header">
+    <div>
+      <div class="brand">DARWIN.SKILL</div>
+      <div class="brand-sub">V4 · 解决系统性偏低</div>
+    </div>
+    <div class="date">2026-04-17</div>
+  </div>
+
+  <div class="title">novelty-assessment</div>
+  <div class="subtitle">从"每次都是低分"到"真正严苛且公正"的 5 轮进化</div>
+
+  <div class="problem-box">
+    <div class="problem-label">用户反馈 · 核心问题</div>
+    <div class="problem-text">"评分不稳定，每次都是低分，没有一个高分的"</div>
+  </div>
+
+  <div class="section-title">诊断 · 10 处下调机制叠加无上限</div>
+  <div style="font-size: 13px; color: #555; line-height: 1.6; margin-bottom: 20px;">
+    基线 4 次子 agent 独立测试确认：任何 idea 同时命中 3-4 条硬 cap（组合型/术语包装/Toy-Only/directly_refuted/Phase 0.8），分数被强制压在 <strong style="color: #C94B27;">2.85-4.5 窄区间</strong>；LLM 评估对"是否组合型"等判断不一致导致同 idea 两次 run 分差 0.7；缺失正向校准机制（只扣不加）。
+  </div>
+
+  <div class="section-title">核心指标进化</div>
+  <div class="metrics-grid">
+    <div class="metric">
+      <div class="metric-label">平均分</div>
+      <div class="metric-before">3.78</div>
+      <div class="metric-after">4.48</div>
+      <div class="metric-delta">+0.70</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">分数区分度</div>
+      <div class="metric-before">1.65 分</div>
+      <div class="metric-after">4.50 分</div>
+      <div class="metric-delta">× 2.7 倍</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">同 idea 稳定性</div>
+      <div class="metric-before">± 0.70</div>
+      <div class="metric-after">± 0.30</div>
+      <div class="metric-delta">收敛 57%</div>
+    </div>
+  </div>
+
+  <div class="section-title">5 轮迭代 · 全部保留 0 回滚</div>
+  <table class="rounds-table">
+    <thead>
+      <tr>
+        <th style="width: 70px;">轮次</th>
+        <th style="width: 200px;">核心修复</th>
+        <th>改动摘要</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="round-tag">R18</span></td>
+        <td><strong>处罚叠加上限</strong><br><span style="font-size:11px;color:#888;">B0.8 检查点</span></td>
+        <td>≥3 条硬处罚时，按 P1-P5 优先级保留最相关 2 条 ACTIVE，其余降级软提示；带"纯复现 ≤3 分豁免"防误救</td>
+      </tr>
+      <tr>
+        <td><span class="round-tag">R19</span></td>
+        <td><strong>正向校准</strong><br><span style="font-size:11px;color:#888;">B0.9 检查点</span></td>
+        <td>5 条加分触发 B+1..B+5（跨学科桥梁/新可测量量/Fertile Ground/Disruption+Novelty/朴素但美），上限 +1.5；3 道防线防误救</td>
+      </tr>
+      <tr>
+        <td><span class="round-tag">R20</span></td>
+        <td><strong>Claim Audit 严格化</strong><br><span style="font-size:11px;color:#888;">最大效果轮</span></td>
+        <td>directly_refuted 要求三层同时满足（问题层+概念骨架+关键机制），每层须显式对比；模糊输入保守降级；判定一致性 60% → 85%</td>
+      </tr>
+      <tr>
+        <td><span class="round-tag">R21</span></td>
+        <td><strong>过度乐观阈值</strong><br><span style="font-size:11px;color:#888;">B0.5 修订</span></td>
+        <td>从"任一触发"改"2/3 同时触发"：均分阈值 6.5 → 7.0，最低维度 ≥5 → ≥6；保留典型顶会(5.5-7.0)合理空间</td>
+      </tr>
+      <tr>
+        <td><span class="round-tag">R22</span></td>
+        <td><strong>双锚点+不对称极端分</strong><br><span style="font-size:11px;color:#888;">B0 修订</span></td>
+        <td>One-Shot 单锚点(4.65)扩展为 A 档(3.2-6.2)/B 档(5.0-7.5)按特质对标；低分<3严格/高分>8 放宽证据要求</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="section-title">实测验证 · 3 个测试 prompt</div>
+  <div class="test-grid test-header">
+    <div>测试 idea</div>
+    <div>基线</div>
+    <div>R22 最终</div>
+    <div>评估合理性</div>
+  </div>
+  <div class="test-grid test-row">
+    <div class="test-name">P1 · RL 优化 CoT 粒度</div>
+    <div class="test-before">4.0</div>
+    <div class="test-after">4.65</div>
+    <div class="test-note">✓ 与 R1 三层重合，合理偏低</div>
+  </div>
+  <div class="test-grid test-row">
+    <div class="test-name">P2 · GNN + 信息瓶颈</div>
+    <div class="test-before">4.5</div>
+    <div class="test-after">6.5–6.8</div>
+    <div class="test-note">✓ 跨学科桥梁被正确识别</div>
+  </div>
+  <div class="test-grid test-row">
+    <div class="test-name">P3 · GPT-4 作文评分</div>
+    <div class="test-before">2.85</div>
+    <div class="test-after">2.3</div>
+    <div class="test-note">✓ B0.9 正确不 rescue 低质量</div>
+  </div>
+
+  <div class="verdict-box">
+    <div class="verdict-label">VERDICT</div>
+    <div class="verdict-text">
+      5 轮 R18-R22 全部 <strong>keep</strong>（棘轮零回滚）。真正低质量 idea 仍严苛（2.3），真正有价值 idea 终于能上浮（6.5-6.8），真正中等 idea 保持中档（4.65）——<strong>skill 终于能区分 3 个档位</strong>，而非把所有 idea 压成单一 4 分档。用户反馈的"每次都是低分"根因已解除。
+    </div>
+  </div>
+
+  <div class="footer">
+    <div>Train your Skills like you train your models</div>
+    <div class="footer-brand">github.com/alchaincyf/darwin-skill</div>
+  </div>
+</div>
+</body>
+</html>
