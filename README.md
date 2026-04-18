@@ -5,7 +5,6 @@
 [![Version](https://img.shields.io/badge/version-v5%20(Gen%206)-blue)](https://github.com/LancerYOA/The-novelty-judgement-for-Lancer-s-Autoresearch-v3)
 [![Eval Score](https://img.shields.io/badge/eval%20score-96.06%2F100-brightgreen)](https://github.com/LancerYOA/The-novelty-judgement-for-Lancer-s-Autoresearch-v3)
 [![Skill Lines](https://img.shields.io/badge/SKILL.md-1358%20lines-orange)](./SKILL.md)
-[![License](https://img.shields.io/badge/license-MIT-green)](./LICENSE)
 
 ---
 
@@ -168,10 +167,6 @@ Optimization rounds are tracked in `results.tsv`. If you run independent evaluat
 - New test prompts added to `test-prompts.json` with difficulty labels
 
 ---
-
-## 📄 License
-
-MIT License — see [LICENSE](./LICENSE) for details.
 
 ---
 
